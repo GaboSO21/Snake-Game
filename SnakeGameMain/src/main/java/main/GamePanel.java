@@ -15,8 +15,8 @@ public class GamePanel extends JPanel implements ActionListener {
     public static final int UNIT_SIZE = 25;
     public static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT) / UNIT_SIZE;
     public static final int DELAY = 75;
-    public final int x[] = new int[GAME_UNITS];
-    public final int y[] = new int[GAME_UNITS];
+    public int x[] = new int[GAME_UNITS];
+    public int y[] = new int[GAME_UNITS];
     public int bodyParts = 6;
     public int applesEaten = 0;
     public int appleX;
@@ -75,9 +75,10 @@ public class GamePanel extends JPanel implements ActionListener {
             FontMetrics metrics = getFontMetrics(g.getFont());
             g.drawString("Apples: " + applesEaten, (SCREEN_WIDTH - metrics.stringWidth("GAME OVER")) / 2, 590);
 
-        } else {
+        } else if (!running){
             gameOver(g);
         }
+        
 
     }
 
@@ -127,7 +128,7 @@ public class GamePanel extends JPanel implements ActionListener {
             this.running = false;
         }
         // Head touches right
-        if (x[0] > SCREEN_WIDTH) {
+        if (x[0] >= SCREEN_WIDTH) {
             this.running = false;
         }
         // Head touches top
@@ -135,7 +136,7 @@ public class GamePanel extends JPanel implements ActionListener {
             this.running = false;
         }
         // Head touches down
-        if (y[0] > SCREEN_HEIGHT) {
+        if (y[0] >= SCREEN_HEIGHT) {
             this.running = false;
         }
 
@@ -158,17 +159,17 @@ public class GamePanel extends JPanel implements ActionListener {
         g.drawString("Final score: " + applesEaten,
                 (SCREEN_WIDTH - metrics2.stringWidth("Final score: " + applesEaten)) / 2,
                 (int) (SCREEN_HEIGHT / 1.5));
-
+        //Option messages
         g.setColor(Color.RED);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         FontMetrics metrics3 = getFontMetrics(g.getFont());
         g.drawString("Press ENTER to play again!",
-                (SCREEN_WIDTH - metrics3.stringWidth("Press ENTER to play again!")) / 2, 590);
-
-    }
-
-    public void reset() {
-        this.removeAll();
+                (SCREEN_WIDTH - metrics3.stringWidth("Press ENTER to play again")) / 2, 570);
+                  g.setColor(Color.RED);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        FontMetrics metrics4 = getFontMetrics(g.getFont());
+        g.drawString("...or ESC to quit!",
+                (SCREEN_WIDTH - metrics4.stringWidth("...or ESC to quit!")) / 2, 590);
     }
 
     @Override
@@ -177,7 +178,7 @@ public class GamePanel extends JPanel implements ActionListener {
             move();
             checkApple();
             checkColissions();
-        }
+        } 
         repaint();
     }
 
@@ -211,8 +212,17 @@ public class GamePanel extends JPanel implements ActionListener {
             if (!running) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_ENTER:
-        
+                        direction = 'R';
+                        applesEaten = 0;
+                        bodyParts = 6;
+                        x = new int[GAME_UNITS];
+                        y = new int[GAME_UNITS];
+                        timer.start();
+                        running = true;
+                        repaint();
                         break;
+                    case KeyEvent.VK_ESCAPE:
+                        System.exit(0);
                 }
             }
 
